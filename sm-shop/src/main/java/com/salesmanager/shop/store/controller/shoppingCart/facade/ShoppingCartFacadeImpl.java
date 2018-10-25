@@ -639,7 +639,8 @@ public class ShoppingCartFacadeImpl
 	@Override
 	public ShoppingCartData getShoppingCartData(String code, MerchantStore store, Language language) {
 		try {
-			ShoppingCart cartModel = shoppingCartService.getByCode( code, store );
+//			ShoppingCart cartModel = shoppingCartService.getByCode( code, store );
+			ShoppingCart cartModel = shoppingCartServiceClient.getByCartIdAndCode( code, store );
 			if(cartModel!=null) {
 				ShoppingCartData cart = getShoppingCartData(cartModel, language);
 				return cart;

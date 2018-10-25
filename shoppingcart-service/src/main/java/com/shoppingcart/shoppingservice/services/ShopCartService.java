@@ -1,6 +1,5 @@
 package com.shoppingcart.shoppingservice.services;
 
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,9 +7,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.repositories.shoppingcart.ShoppingCartRepository;
 import com.salesmanager.core.business.rest.model.ShoppingCartResponse;
 import com.salesmanager.core.business.services.shoppingcart.ShoppingCartServiceImpl;
+import com.salesmanager.core.model.customer.Customer;
+import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.shoppingcart.ShoppingCart;
 import com.salesmanager.core.model.shoppingcart.ShoppingCartItem;
 import com.salesmanager.shop.shoppingcart.requests.objects.CartRequest;
@@ -37,24 +39,41 @@ public class ShopCartService {
 	}
 
 	public ShoppingCartResponse getShoppingcartByCustomer(String id) {
-		ShoppingCartResponse shoppingCartRes = null;
 		ShoppingCart shoppingCart = null;
-		if (StringUtils.isNotBlank(id)) {
-			shoppingCart = shoppingCartRepository.findByCustomer(Long.valueOf(id));
-			shoppingCartRes = parseShoppingCartResp(shoppingCart);
-		}
+		if (StringUtils.isNotBlank(id) && !StringUtils.isNumeric(id)) {
+			Customer customer = new Customer();
+			customer.setId(Long.valueOf(id));
+			try {
+				shoppingCart = shoppingCartService.getByCustomer(customer);
+			} catch (ServiceException e) {
+			}
 
-		if (shoppingCartRes != null && shoppingCartRes.isObsolete()) {
-			shoppingCartRepository.delete(shoppingCart);
-			return null;
-		} else {
-			return shoppingCartRes;
 		}
+		return parseShoppingCartResp(shoppingCart);
+
 	}
+	
+	
+	public ShoppingCartResponse getByCode(String code, int merchantId) {
+		ShoppingCart cart = null;
+			MerchantStore store = new MerchantStore();
+			store.setId(Integer.valueOf(merchantId));
+			try {
+				cart = shoppingCartService.getByCode(code, store);
+			} catch (ServiceException e) {
+			}
+		return parseShoppingCartResp(cart);
+	}
+	
+	
+	
 
 	public ShoppingCartResponse getShoppingcartByCode(String code) {
+
 		return parseShoppingCartResp(shoppingCartRepository.findByCode(code));
 	}
+
+	
 
 	public ShoppingCartResponse getShoppingcartByOne(String id) {
 		if (StringUtils.isNotBlank(id)) {
@@ -77,7 +96,7 @@ public class ShopCartService {
 
 	public ShoppingCartResponse getShoppingCartByCustomer(CustomerRequest id) throws Exception {
 		ShoppingCartResponse shoppingCartRes = null;
-		ShoppingCart shoppingCart = null; //inside microservice
+		ShoppingCart shoppingCart = null; // inside microservice
 		if (0 != id.getCustomerId()) {
 			shoppingCart = shoppingCartRepository.findByCustomer(Long.valueOf(id.getCustomerId()));
 			ShoppingCart shopCart = shoppingCartService.getPopulatedShoppingCart(shoppingCart);
@@ -102,7 +121,13 @@ public class ShopCartService {
 	}
 
 	public ShoppingCartResponse getShoppingcartByCode(int id, String code) {
-		return parseShoppingCartResp(shoppingCartRepository.findByCode(id, code));
+		ShoppingCart cart = null;
+		MerchantStore store = new MerchantStore();
+		try {
+			cart = shoppingCartService.getByCode(code, store);
+		} catch (ServiceException e) {
+		}
+		return parseShoppingCartResp(cart);
 	}
 
 	private ShoppingCartResponse parseShoppingCartResp(ShoppingCart cart) {
@@ -119,6 +144,7 @@ public class ShopCartService {
 			response.setMerchantStore(cart.getMerchantStore());
 			response.setShoppingCartCode(cart.getShoppingCartCode());
 		}
+
 		return response;
 	}
 
