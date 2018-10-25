@@ -38,6 +38,7 @@ public class ShopCartService {
 		return null;
 	}
 
+	//getByCustomer
 	public ShoppingCartResponse getShoppingcartByCustomer(String id) {
 		ShoppingCart shoppingCart = null;
 		if (StringUtils.isNotBlank(id) && !StringUtils.isNumeric(id)) {
@@ -96,7 +97,7 @@ public class ShopCartService {
 
 	public ShoppingCartResponse getShoppingCartByCustomer(CustomerRequest id) throws Exception {
 		ShoppingCartResponse shoppingCartRes = null;
-		ShoppingCart shoppingCart = null; // inside microservice
+		ShoppingCart shoppingCart = null; 
 		if (0 != id.getCustomerId()) {
 			shoppingCart = shoppingCartRepository.findByCustomer(Long.valueOf(id.getCustomerId()));
 			ShoppingCart shopCart = shoppingCartService.getPopulatedShoppingCart(shoppingCart);

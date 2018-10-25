@@ -1,4 +1,4 @@
-package com.salesmanager.shop.restclients;
+/*package com.salesmanager.shop.restclients;
 
 
 
@@ -42,7 +42,7 @@ public class ShoppingCartBackUpClient {
 			
 	}
 	
-	/*public ShoppingCartData getByCartIdAndCode(String code, MerchantStore store, Language language){
+	public ShoppingCartData getByCartIdAndCode(String code, MerchantStore store, Language language){
 			ShoppingCart cartModel = invokeService(url+store.getId()+"/"+code, HttpMethod.GET, null).getBody();
 			;
 			if(cartModel!=null) {
@@ -52,7 +52,7 @@ public class ShoppingCartBackUpClient {
 		} catch( Exception nre) {
 			return null;
 		}
-		return null;*/
+		return null;
 
 		
 	
@@ -102,3 +102,4 @@ public class ShoppingCartBackUpClient {
 	}
 
 }
+*/

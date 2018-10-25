@@ -1,4 +1,4 @@
-package com.shoppingcart.shoppingservice.restcontrollers;
+/*package com.shoppingcart.shoppingservice.restcontrollers;
 
 import java.util.List;
 
@@ -17,34 +17,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.salesmanager.core.business.rest.model.ShoppingCartResponse;
 import com.salesmanager.shop.shoppingcart.requests.objects.CartRequest;
 import com.salesmanager.shop.shoppingcart.requests.objects.CustomerRequest;
 import com.salesmanager.shop.shoppingcart.requests.objects.MerchantRequest;
-import com.shoppingcart.shoppingservice.services.ShopCartService;
+import com.shoppingcart.shoppingservice.services.ShopCartService2;
 
 @RestController
 @RequestMapping
-public class ShoppingcartRestController {
+public class ShoppingcartRestController2 {
 
-	Logger logger = LoggerFactory.getLogger(ShoppingcartRestController.class);
+	Logger logger = LoggerFactory.getLogger(ShoppingcartRestController2.class);
 	
-	  @Autowired ObjectMapper objectMapper;
+	 * @Autowired ObjectMapper objectMapper;
 	 
 
 	@Autowired
-	private ShopCartService shopCartService;
+	private ShopCartService2 shopCartService;
 
 	@RequestMapping(value = "/{id}/{code}", method = RequestMethod.GET)
-	@HystrixCommand(fallbackMethod = "getShoppingCartByCode")
 	public ShoppingCartResponse getShoppingCartByCode(@PathVariable(value = "id") int id,
 			@PathVariable(value = "code") String code) {
 		return shopCartService.getByCode(code, id);
-	}
+	}}
 
 	@RequestMapping(value = "/cart", method = RequestMethod.POST)
-	@HystrixCommand(fallbackMethod = "getShoppingcartByCartId")
 	public ShoppingCartResponse getShoppingcartByCartId(@Valid @RequestBody CartRequest cartId) {
 		return shopCartService.getByShoppingCartId(cartId);
 	}
@@ -61,15 +58,14 @@ public class ShoppingcartRestController {
 	}
 
 	@RequestMapping(value = "/customer", method = RequestMethod.GET)
-	@HystrixCommand(fallbackMethod = "getByCustomerId")
 	public ShoppingCartResponse getByCustomerId(@RequestParam String customerId) {
 		return shopCartService.getShoppingcartByCustomer(customerId);
 	}
+}
 
 	@RequestMapping(value = "/merchant", method = RequestMethod.POST)
-	@HystrixCommand(fallbackMethod = "getByShoppingCartMerchantId")
 	public ShoppingCartResponse getById(@Valid @RequestBody MerchantRequest merchantRequest) {
 		return shopCartService.getByShoppingCartMerchantId(merchantRequest);
 	}
 
-}
+}*/

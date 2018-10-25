@@ -1,8 +1,5 @@
 package com.salesmanager.shop.restclients;
 
-import javax.persistence.NoResultException;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,16 +11,10 @@ import org.springframework.web.client.RestTemplate;
 import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.salesmanager.core.business.exception.ServiceException;
-import com.salesmanager.core.business.services.shoppingcart.ShoppingCartServiceImpl;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.salesmanager.core.model.customer.Customer;
 import com.salesmanager.core.model.merchant.MerchantStore;
-import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.shoppingcart.ShoppingCart;
-import com.salesmanager.shop.model.shoppingcart.ShoppingCartData;
-import com.salesmanager.shop.shoppingcart.requests.objects.CustomerRequest;
-import com.salesmanager.shop.store.controller.shoppingCart.facade.ShoppingCartFacadeImpl;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -32,11 +23,12 @@ public class ShoppingCartServiceClient {
 
 	private String url = "http://localhost:8081";
 
+	@HystrixCommand(fallbackMethod = "getShoppingCartByCustomer")
 	public ShoppingCart getByCustomer(final Customer customer) {
 		return invokeService(url + "customer?customerId=" + customer.getId(), HttpMethod.GET, null).getBody();
 	}
 
-
+	@HystrixCommand(fallbackMethod = "getByCodeAndMarchant")
 	public ShoppingCart getByCartIdAndCode(String code, MerchantStore store) {
 		return invokeService(url + store.getId() + "/" + code, HttpMethod.GET, null).getBody();
 	}
